@@ -9,6 +9,7 @@ void Game::initVariables()
 	this->name = "Game 1";
 
 	// Game logic
+	this->endGame = false;
 	this->hp = 10;
 	this->spawnTimerMax = 10;
 	this->spawnTimer = this->spawnTimerMax;
@@ -44,6 +45,11 @@ const bool Game::run() const
 	return this->window->isOpen();
 }
 
+const bool Game::getEndGame() const
+{
+	return this->endGame;
+}
+
 void Game::spawnEnemy()
 {
 	if (this->spawnTimer < this->spawnTimerMax)
@@ -52,6 +58,9 @@ void Game::spawnEnemy()
 	{
 		// Set random position
 		this->enemy.setPosition(rand() % int(this->window->getSize().x - this->enemy.getSize().x), -this->enemy.getSize().y);
+
+		// Set random color
+		this->enemy.setFillColor(sf::Color(rand()%255+200, rand()%255+200, rand()%255+200, 255));
 
 		// Push enemy to the vector and reset the timer
 		this->enemies.push_back(this->enemy);
@@ -111,10 +120,15 @@ void Game::updateEnemies()
 
 void Game::update()
 {
-	this->spawnEnemy();
-	this->pollEvents();
-	this->updateMousePosition();
-	this->updateEnemies();
+	if (hp < 1)
+		this->endGame = true;
+	if (!this->endGame)
+	{
+		this->spawnEnemy();
+		this->pollEvents();
+		this->updateMousePosition();
+		this->updateEnemies();
+	}
 }
 
 void Game::renderEnemies()

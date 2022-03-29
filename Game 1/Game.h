@@ -24,6 +24,7 @@ private:
 	sf::Event ev;
 
 	// Game logic
+	bool endGame;
 	int hp;
 	int spawnTimer;
 	int spawnTimerMax;
@@ -49,6 +50,7 @@ public:
 
 	// Accessors
 	const bool run() const;
+	const bool getEndGame() const;
 
 	// Functions
 	void spawnEnemy();
