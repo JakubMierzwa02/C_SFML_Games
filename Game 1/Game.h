@@ -24,9 +24,14 @@ private:
 	sf::Event ev;
 
 	// Game logic
+	int hp;
 	int spawnTimer;
 	int spawnTimerMax;
 	float movementSpeed;
+
+	// Mouse positions
+	sf::Vector2i mousePosWindow;
+	sf::Vector2f mousePosView;
 
 	// Enemy
 	sf::RectangleShape enemy;
@@ -49,6 +54,7 @@ public:
 	void spawnEnemy();
 	void pollEvents();
 
+	void updateMousePosition();
 	void updateEnemies();
 	void update();
 

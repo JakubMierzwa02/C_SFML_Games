@@ -9,7 +9,8 @@ void Game::initVariables()
 	this->name = "Game 1";
 
 	// Game logic
-	this->spawnTimerMax = 40;
+	this->hp = 10;
+	this->spawnTimerMax = 10;
 	this->spawnTimer = this->spawnTimerMax;
 	this->movementSpeed = 10.f;
 }
@@ -23,7 +24,7 @@ void Game::initWindow()
 void Game::initEnemy()
 {
 	this->enemy.setFillColor(sf::Color::Green);
-	this->enemy.setSize(sf::Vector2f(100.f, 100.f));
+	this->enemy.setSize(sf::Vector2f(50.f, 50.f));
 }
 
 Game::Game()
@@ -49,6 +50,10 @@ void Game::spawnEnemy()
 		this->spawnTimer++;
 	else
 	{
+		// Set random position
+		this->enemy.setPosition(rand() % int(this->window->getSize().x - this->enemy.getSize().x), -this->enemy.getSize().y);
+
+		// Push enemy to the vector and reset the timer
 		this->enemies.push_back(this->enemy);
 		this->spawnTimer = 0;
 	}
@@ -73,11 +78,34 @@ void Game::pollEvents()
 	}
 }
 
+void Game::updateMousePosition()
+{
+	this->mousePosWindow = sf::Mouse::getPosition(*this->window);
+	this->mousePosView = this->window->mapPixelToCoords(this->mousePosWindow);
+}
+
 void Game::updateEnemies()
 {
 	for (size_t i = 0; i < this->enemies.size(); i++)
 	{
+		// Move enemies
 		this->enemies[i].move(0.f, this->movementSpeed);
+
+		// Check if enemy crossed bottom line
+		if (this->enemies[i].getPosition().y > this->window->getSize().y)
+		{
+			this->enemies.erase(this->enemies.begin() + i);
+		}
+
+		// Check if hovered over the enemy
+		if (this->enemies[i].getGlobalBounds().contains(this->mousePosView))
+		{
+			this->enemies.erase(this->enemies.begin() + i);
+
+			// Lose HP
+			hp--;
+			std::cout << "Health: " << this->hp << '\n';
+		}
 	}
 }
 
@@ -85,6 +113,7 @@ void Game::update()
 {
 	this->spawnEnemy();
 	this->pollEvents();
+	this->updateMousePosition();
 	this->updateEnemies();
 }
 
