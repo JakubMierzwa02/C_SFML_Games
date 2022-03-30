@@ -4,6 +4,7 @@
 #include <ctime>
 #include <string>
 #include <vector>
+#include <sstream>
 
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
@@ -38,9 +39,15 @@ private:
 	sf::RectangleShape enemy;
 	std::vector<sf::RectangleShape> enemies;
 
+	// Resources
+	sf::Font font;
+	sf::Text text;
+
 	// Functions
 	void initVariables();
 	void initWindow();
+	void initFont();
+	void initText();
 	void initEnemy();
 
 public:
@@ -56,10 +63,14 @@ public:
 	void spawnEnemy();
 	void pollEvents();
 
+	// Update frame
+	void updateText();
 	void updateMousePosition();
 	void updateEnemies();
 	void update();
 
+	// Render frame
+	void renderText();
 	void renderEnemies();
 	void render();
 };

@@ -11,15 +11,30 @@ void Game::initVariables()
 	// Game logic
 	this->endGame = false;
 	this->hp = 10;
-	this->spawnTimerMax = 10;
+	this->spawnTimerMax = 7;
 	this->spawnTimer = this->spawnTimerMax;
-	this->movementSpeed = 10.f;
+	this->movementSpeed = 12.f;
 }
 
 void Game::initWindow()
 {
 	this->window = new sf::RenderWindow(this->videoMode, this->name, sf::Style::Titlebar | sf::Style::Close);
 	this->window->setFramerateLimit(60);
+}
+
+void Game::initFont()
+{
+	if (!this->font.loadFromFile("Fonts/Quicksand-VariableFont_wght.ttf"))
+	{
+		std::cout << "ERROR Could not open file Quicksand-VariableFont_wght.ttf \n";
+	}
+}
+
+void Game::initText()
+{
+	this->text.setFont(this->font);
+	this->text.setCharacterSize(24);
+	this->text.setString("NONE");
 }
 
 void Game::initEnemy()
@@ -32,6 +47,8 @@ Game::Game()
 {
 	this->initVariables();
 	this->initWindow();
+	this->initFont();
+	this->initText();
 	this->initEnemy();
 }
 
@@ -60,7 +77,7 @@ void Game::spawnEnemy()
 		this->enemy.setPosition(rand() % int(this->window->getSize().x - this->enemy.getSize().x), -this->enemy.getSize().y);
 
 		// Set random color
-		this->enemy.setFillColor(sf::Color(rand()%255+200, rand()%255+200, rand()%255+200, 255));
+		this->enemy.setFillColor(sf::Color(rand() % 255 + 200, rand() % 255 + 200, rand() % 255 + 200, 255));
 
 		// Push enemy to the vector and reset the timer
 		this->enemies.push_back(this->enemy);
@@ -87,6 +104,14 @@ void Game::pollEvents()
 	}
 }
 
+void Game::updateText()
+{
+	std::stringstream ss;
+	ss << "Health: " << this->hp << '\n';
+
+	this->text.setString(ss.str());
+}
+
 void Game::updateMousePosition()
 {
 	this->mousePosWindow = sf::Mouse::getPosition(*this->window);
@@ -105,15 +130,19 @@ void Game::updateEnemies()
 		{
 			this->enemies.erase(this->enemies.begin() + i);
 		}
+	}
 
+	bool deleted = false;
+	for (size_t i = 0; i < enemies.size() && !deleted; i++)
+	{
 		// Check if hovered over the enemy
 		if (this->enemies[i].getGlobalBounds().contains(this->mousePosView))
 		{
+			deleted = true;
 			this->enemies.erase(this->enemies.begin() + i);
 
 			// Lose HP
 			hp--;
-			std::cout << "Health: " << this->hp << '\n';
 		}
 	}
 }
@@ -122,6 +151,7 @@ void Game::update()
 {
 	if (hp < 1)
 		this->endGame = true;
+	this->updateText();
 	if (!this->endGame)
 	{
 		this->spawnEnemy();
@@ -129,6 +159,11 @@ void Game::update()
 		this->updateMousePosition();
 		this->updateEnemies();
 	}
+}
+
+void Game::renderText()
+{
+	this->window->draw(this->text);
 }
 
 void Game::renderEnemies()
@@ -144,6 +179,7 @@ void Game::render()
 	this->window->clear();
 
 	// Render stuff
+	this->renderText();
 	this->renderEnemies();
 
 	this->window->display();
