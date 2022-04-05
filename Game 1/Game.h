@@ -63,13 +63,13 @@ public:
 	void spawnEnemy();
 	void pollEvents();
 
-	// Update frame
+	// Update
 	void updateText();
 	void updateMousePosition();
 	void updateEnemies();
 	void update();
 
-	// Render frame
+	// Render
 	void renderText();
 	void renderEnemies();
 	void render();

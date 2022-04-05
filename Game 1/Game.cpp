@@ -128,6 +128,7 @@ void Game::updateEnemies()
 		// Check if enemy crossed bottom line
 		if (this->enemies[i].getPosition().y > this->window->getSize().y)
 		{
+			// Delete the enemy
 			this->enemies.erase(this->enemies.begin() + i);
 		}
 	}
@@ -138,6 +139,7 @@ void Game::updateEnemies()
 		// Check if hovered over the enemy
 		if (this->enemies[i].getGlobalBounds().contains(this->mousePosView))
 		{
+			// Delete the enemy
 			deleted = true;
 			this->enemies.erase(this->enemies.begin() + i);
 
