@@ -14,6 +14,11 @@ void Game::initWindow()
 	this->window->setFramerateLimit(60);
 }
 
+void Game::initPlayer()
+{
+	//this->player = new Player;
+}
+
 Game::Game()
 {
 	this->initVariables();
@@ -23,19 +28,24 @@ Game::Game()
 Game::~Game()
 {
 	delete this->window;
+	//delete this->player;
 }
 
 void Game::pollEvents()
 {
 	while (this->window->pollEvent(this->event))
 	{
-
+		if (this->event.type == sf::Event::Closed)
+			this->window->close();
 	}
 }
 
 void Game::update()
 {
+	this->pollEvents();
 
+	// Update the player
+	this->player.update(this->window);
 }
 
 void Game::render()
@@ -43,6 +53,7 @@ void Game::render()
 	this->window->clear();
 
 	// Render stuff
+	this->player.render(this->window);
 
 	this->window->display();
 }
