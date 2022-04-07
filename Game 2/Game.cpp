@@ -75,14 +75,30 @@ void Game::updateShooting()
 
 			this->currVelocities.push_back(this->currVelocity);
 			this->bullets.push_back(this->bullet);
+
+			std::cout << this->bullets.size() << '\n';
 		}
 
 		this->shootDelay = 0;
 	}
 
+	// Move bullets
 	for (size_t i = 0; i < bullets.size(); i++)
 	{
 		this->bullets[i].move(this->currVelocities[i]);
+	}
+
+	// Out of bounds collision
+	for (size_t i = 0; i < bullets.size(); i++)
+	{
+		if (this->bullets[i].getPosition().x + this->bullets[i].getRadius() * 2 < 0
+			|| this->bullets[i].getPosition().x > this->window->getSize().x
+			|| this->bullets[i].getPosition().y + this->bullets[i].getRadius() * 2 < 0
+			|| this->bullets[i].getPosition().y > this->window->getSize().y)
+		{
+			this->bullets.erase(this->bullets.begin() + i);
+			this->currVelocities.erase(this->currVelocities.begin() + i);
+		}
 	}
 }
 
