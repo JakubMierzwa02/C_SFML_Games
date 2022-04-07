@@ -19,6 +19,11 @@ Player::~Player()
 
 }
 
+const sf::CircleShape Player::getPlayer() const
+{
+	return this->shape;
+}
+
 void Player::updateInput()
 {
 	// Move the player

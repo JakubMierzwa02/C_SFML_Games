@@ -15,6 +15,9 @@ public:
 	Player();
 	virtual ~Player();
 
+	// Accessors
+	const sf::CircleShape getPlayer() const;
+
 	void updateInput();
 	void windowCollision(const sf::RenderTarget*);
 
