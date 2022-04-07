@@ -2,7 +2,6 @@
 
 #include "libs.h"
 #include "Player.h"
-#include "Bullet.h"
 
 class Game
 {
@@ -17,12 +16,19 @@ private:
 	sf::Event event;
 
 	// Player
-	// HAVE TO ADD POINTER
 	Player* player;
 
 	// Bullets
-	Bullet bullet;
-	std::vector<Bullet> bullets;
+	sf::CircleShape bullet;
+	std::vector<sf::CircleShape> bullets;
+
+	// Velocity of bullets
+	sf::Vector2f currVelocity;
+	std::vector<sf::Vector2f> currVelocities;
+	float maxSpeed;
+
+	int shootDelayMax;
+	int shootDelay;
 
 	// Vectors
 	sf::Vector2f playerCenter;
@@ -34,7 +40,7 @@ private:
 	void initVariables();
 	void initWindow();
 	void initPlayer();
-	void initVectors();
+	void initBullet();
 
 public:
 	Game();
@@ -47,6 +53,8 @@ public:
 	// Functions
 	void pollEvents();
 
+	void updateVectors();
+	void updateShooting();
 	void update();
 	void render();
 

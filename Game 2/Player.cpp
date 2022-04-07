@@ -2,11 +2,11 @@
 
 void Player::initShape()
 {
-	this->shape.setFillColor(sf::Color::White);
+	this->shape.setFillColor(sf::Color(255, 255, 255));
 	this->shape.setRadius(25.f);
 	this->shape.setPosition(sf::Vector2f(600.f, 360.f));
 
-	this->movementSpeed = 10.f;
+	this->movementSpeed = 6.f;
 }
 
 Player::Player()
