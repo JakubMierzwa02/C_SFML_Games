@@ -2,6 +2,7 @@
 
 #include "libs.h"
 #include "Player.h"
+#include "Enemy.h"
 
 class Game
 {
@@ -30,6 +31,11 @@ private:
 	int shootDelayMax;
 	int shootDelay;
 
+	// Enemies
+	std::vector<Enemy*> enemies;
+	float spawnTimerMax;
+	float spawnTimer;
+
 	// Vectors
 	sf::Vector2f playerCenter;
 	sf::Vector2f mousePosWindow;
@@ -41,6 +47,7 @@ private:
 	void initWindow();
 	void initPlayer();
 	void initBullet();
+	void initEnemies();
 
 public:
 	Game();
@@ -55,6 +62,8 @@ public:
 
 	void updateVectors();
 	void updateShooting();
+	void updateEnemies();
+	void updateCombat();
 	void update();
 	void render();
 

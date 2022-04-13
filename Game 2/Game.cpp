@@ -23,12 +23,18 @@ void Game::initBullet()
 {
 	this->bullet.setFillColor(sf::Color::Red);
 	this->bullet.setRadius(5.f);
-	this->maxSpeed = 15.f;
+	this->maxSpeed = 20.f;
 	this->currVelocity.x = 0.f;
 	this->currVelocity.y = 0.f;
 
 	this->shootDelayMax = 4.f;
 	this->shootDelay = this->shootDelayMax;
+}
+
+void Game::initEnemies()
+{
+	this->spawnTimerMax = 20.f;
+	this->spawnTimer = 0.f;
 }
 
 Game::Game()
@@ -37,12 +43,18 @@ Game::Game()
 	this->initWindow();
 	this->initPlayer();
 	this->initBullet();
+	this->initEnemies();
 }
 
 Game::~Game()
 {
 	delete this->window;
 	delete this->player;
+
+	for (auto enemy : this->enemies)
+	{
+		delete enemy;
+	}
 }
 
 void Game::pollEvents()
@@ -75,8 +87,6 @@ void Game::updateShooting()
 
 			this->currVelocities.push_back(this->currVelocity);
 			this->bullets.push_back(this->bullet);
-
-			std::cout << this->bullets.size() << '\n';
 		}
 
 		this->shootDelay = 0;
@@ -102,6 +112,37 @@ void Game::updateShooting()
 	}
 }
 
+void Game::updateEnemies()
+{
+	if (this->spawnTimer < this->spawnTimerMax)
+		this->spawnTimer += 1.f;
+	else
+	{
+		this->enemies.push_back(new Enemy(sf::Vector2f(rand() % this->window->getSize().x, -50.f)));
+		
+		this->spawnTimer = 0.f;
+	}
+
+	for (size_t i = 0; i < this->enemies.size(); i++)
+	{
+		this->enemies[i]->update();
+	}
+
+	// Check if enemy is out of window
+	for (size_t i = 0; i < this->enemies.size(); i++)
+	{
+		if (this->enemies[i]->getBounds().top > this->window->getSize().y)
+		{
+			this->enemies.erase(this->enemies.begin() + i);
+		}
+	}
+}
+
+void Game::updateCombat()
+{
+
+}
+
 void Game::update()
 {
 	this->pollEvents();
@@ -113,6 +154,9 @@ void Game::update()
 
 	// Update shooting
 	this->updateShooting();
+
+	this->updateEnemies();
+	this->updateCombat();
 }
 
 void Game::render()
@@ -123,9 +167,14 @@ void Game::render()
 	this->player->render(this->window);
 
 	// Render bullets
-	for (size_t i = 0; i < bullets.size(); i++)
+	for (size_t i = 0; i < this->bullets.size(); i++)
 	{
-		this->window->draw(bullets[i]);
+		this->window->draw(this->bullets[i]);
+	}
+
+	for (size_t i = 0; i < this->enemies.size(); i++)
+	{
+		this->enemies[i]->render(this->window);
 	}
 
 	this->window->display();

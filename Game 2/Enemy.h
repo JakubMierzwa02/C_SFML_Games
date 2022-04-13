@@ -5,16 +5,19 @@
 class Enemy
 {
 private:
-	sf::RectangleShape shape;
+	sf::CircleShape shape;
 	float movementSpeed;
 
 	void initShape();
 
 public:
-	Enemy();
+	Enemy(sf::Vector2f);
 	virtual ~Enemy();
 
+	// Accessors
+	const sf::FloatRect getBounds() const;
+
 	void update();
-	void render();
+	void render(sf::RenderTarget*);
 };
 
