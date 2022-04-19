@@ -16,8 +16,9 @@ public:
 
 	// Accessors
 	const sf::FloatRect getBounds() const;
+	const sf::Vector2f getPosition() const;
 
-	void update();
+	void update(sf::Vector2f);
 	void render(sf::RenderTarget*);
 };
 

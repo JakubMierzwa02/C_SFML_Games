@@ -7,6 +7,8 @@ void Player::initShape()
 	this->shape.setPosition(sf::Vector2f(600.f, 360.f));
 
 	this->movementSpeed = 6.f;
+	this->attackCooldownMax = 4.f;
+	this->attackCooldown = this->attackCooldownMax;
 }
 
 Player::Player()
@@ -22,6 +24,17 @@ Player::~Player()
 const sf::CircleShape Player::getPlayer() const
 {
 	return this->shape;
+}
+
+const bool Player::canAttack()
+{
+	if (this->attackCooldown >= this->attackCooldownMax)
+	{
+		this->attackCooldown = 0;
+		return true;
+	}
+	this->attackCooldown++;
+	return false;
 }
 
 void Player::updateInput()

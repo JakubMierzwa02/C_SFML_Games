@@ -28,19 +28,30 @@ private:
 	std::vector<sf::Vector2f> currVelocities;
 	float maxSpeed;
 
-	int shootDelayMax;
-	int shootDelay;
-
 	// Enemies
 	std::vector<Enemy*> enemies;
 	float spawnTimerMax;
 	float spawnTimer;
+	bool erased;
+
+	// Velocity of Enemies
+	sf::Vector2f currEnemyVelocity;
+	std::vector<sf::Vector2f> currEnemyVelocities;
 
 	// Vectors
 	sf::Vector2f playerCenter;
 	sf::Vector2f mousePosWindow;
 	sf::Vector2f aimDir;
 	sf::Vector2f aimDirNorm;
+
+	sf::Vector2f enemySpawnPoint;
+	std::vector<sf::Vector2f> enemySpawnPoints;
+	sf::Vector2f targetPoint;
+	std::vector<sf::Vector2f> targetPoints;
+	sf::Vector2f enemyDir;
+	std::vector<sf::Vector2f> enemyDirs;
+	sf::Vector2f enemyDirNorm;
+	std::vector<sf::Vector2f> enemyDirNorms;
 
 	// Private Functions
 	void initVariables();
@@ -61,6 +72,7 @@ public:
 	void pollEvents();
 
 	void updateVectors();
+	void updateInput();
 	void updateShooting();
 	void updateEnemies();
 	void updateCombat();

@@ -24,9 +24,14 @@ const sf::FloatRect Enemy::getBounds() const
 	return this->shape.getGlobalBounds();
 }
 
-void Enemy::update()
+const sf::Vector2f Enemy::getPosition() const
 {
-	this->shape.move(0.f, this->movementSpeed);
+	return this->shape.getPosition();
+}
+
+void Enemy::update(sf::Vector2f moveDir)
+{
+	this->shape.move(moveDir);
 }
 
 void Enemy::render(sf::RenderTarget* target)
