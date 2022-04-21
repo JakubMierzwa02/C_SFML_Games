@@ -2,16 +2,33 @@
 
 void Game::initVariables()
 {
+	// Window
 	this->windowName = "Game 2";
 	this->windowWidth = 1280;
 	this->windowHeight = 720;
 	this->videoMode = sf::VideoMode(this->windowWidth, this->windowHeight);
+
+	// Game logic
+	this->points = 0;
+	this->healthMax = 10;
+	this->health = this->healthMax;
 }
 
 void Game::initWindow()
 {
 	this->window = new sf::RenderWindow(videoMode, windowName, sf::Style::Resize | sf::Style::Close);
 	this->window->setFramerateLimit(60);
+}
+
+void Game::initGui()
+{
+	if (!this->font.loadFromFile("Fonts/font.ttf"))
+		throw "Error: Could not open font.ttf file";
+
+	this->guiText.setFont(this->font);
+	this->guiText.setCharacterSize(32);
+	this->guiText.setFillColor(sf::Color::White);
+	this->guiText.setString("NONE");
 }
 
 void Game::initPlayer()
@@ -41,6 +58,7 @@ Game::Game()
 {
 	this->initVariables();
 	this->initWindow();
+	this->initGui();
 	this->initPlayer();
 	this->initBullet();
 	this->initEnemies();
@@ -124,7 +142,7 @@ void Game::updateEnemies()
 		this->enemyDirNorm = sf::Vector2f(this->enemyDir.x / sqrt(pow(this->enemyDir.x, 2) + pow(this->enemyDir.y, 2)), this->enemyDir.y / sqrt(pow(this->enemyDir.x, 2) + pow(this->enemyDir.y, 2)));
 		this->enemyDirNorms.push_back(this->enemyDirNorm);
 
-		this->currEnemyVelocity = this->enemyDirNorm * 5.f;
+		this->currEnemyVelocity = this->enemyDirNorm * 8.f;
 		this->currEnemyVelocities.push_back(this->currEnemyVelocity);
 
 		this->spawnTimer = 0.f;
@@ -137,6 +155,7 @@ void Game::updateEnemies()
 
 		if (this->enemies[i]->getBounds().top > this->window->getSize().y)
 		{
+			delete this->enemies[i];
 			this->enemies.erase(this->enemies.begin() + i);
 			this->enemySpawnPoints.erase(this->enemySpawnPoints.begin() + i);
 			this->targetPoints.erase(this->targetPoints.begin() + i);
@@ -149,6 +168,7 @@ void Game::updateEnemies()
 
 void Game::updateCombat()
 {
+	// Check if bullet or player hits enemy
 	for (size_t i = 0; i < this->enemies.size(); i++)
 	{
 		bool erased = false;
@@ -156,6 +176,10 @@ void Game::updateCombat()
 		{
 			if (this->enemies[i]->getBounds().intersects(this->bullets[k].getGlobalBounds()))
 			{
+				// Gain points
+				this->points++;
+
+				// Delete enemy and bullet
 				delete this->enemies[i];
 				this->enemies.erase(this->enemies.begin() + i);
 				this->enemySpawnPoints.erase(this->enemySpawnPoints.begin() + i);
@@ -169,7 +193,33 @@ void Game::updateCombat()
 				erased = true;
 			}
 		}
+
+		if (this->enemies[i]->getBounds().intersects(this->player->getPlayer().getGlobalBounds()))
+		{
+			// Lose health
+			this->health--;
+
+			// Delete enemy
+			delete this->enemies[i];
+			this->enemies.erase(this->enemies.begin() + i);
+			this->enemySpawnPoints.erase(this->enemySpawnPoints.begin() + i);
+			this->targetPoints.erase(this->targetPoints.begin() + i);
+			this->enemyDirs.erase(this->enemyDirs.begin() + i);
+			this->enemyDirNorms.erase(this->enemyDirNorms.begin() + i);
+			this->currEnemyVelocities.erase(this->currEnemyVelocities.begin() + i);
+
+			erased = true;
+		}
 	}
+}
+
+void Game::updateGui()
+{
+	std::stringstream ss;
+
+	ss << "Points: " << this->points << '\n' << "Health: " << this->health << '\n';
+
+	this->guiText.setString(ss.str());
 }
 
 void Game::update()
@@ -187,6 +237,7 @@ void Game::update()
 
 	this->updateEnemies();
 	this->updateCombat();
+	this->updateGui();
 }
 
 void Game::render()
@@ -202,17 +253,22 @@ void Game::render()
 		this->window->draw(this->bullets[i]);
 	}
 
+	// Render enemies
 	for (size_t i = 0; i < this->enemies.size(); i++)
 	{
 		this->enemies[i]->render(this->window);
 	}
+
+	// Render GUI
+	this->window->draw(this->guiText);
 
 	this->window->display();
 }
 
 void Game::run()
 {
-	while (this->window->isOpen())
+	// Game loop
+	while (this->window->isOpen() && this->health > 0)
 	{
 		this->update();
 		this->render();

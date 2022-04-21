@@ -2,7 +2,7 @@
 
 void Enemy::initShape()
 {
-	this->movementSpeed = 5.f;
+	this->movementSpeed = 8.f;
 	this->shape.setFillColor(sf::Color(rand() % 255 + 1, rand() % 255 + 1, rand() % 255 + 1));
 	this->shape.setPointCount(rand() % 7 + 1);
 	this->shape.setRadius(40.f);

@@ -16,6 +16,18 @@ private:
 	// Events
 	sf::Event event;
 
+	// Game logic
+	unsigned points;
+	int healthMax;
+	int health;
+	
+	// Resources
+	sf::Texture backgroundTex;
+	sf::Font font;
+
+	// GUI
+	sf::Text guiText;
+
 	// Player
 	Player* player;
 
@@ -56,6 +68,7 @@ private:
 	// Private Functions
 	void initVariables();
 	void initWindow();
+	void initGui();
 	void initPlayer();
 	void initBullet();
 	void initEnemies();
@@ -76,6 +89,7 @@ public:
 	void updateShooting();
 	void updateEnemies();
 	void updateCombat();
+	void updateGui();
 	void update();
 	void render();
 
